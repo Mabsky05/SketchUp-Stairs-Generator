@@ -19,34 +19,45 @@ stairface = ent.add_face pt1, pt2, pt3, pt4
 stairface.reverse!
 stairface.pushpull 180.mm
 
-=begin 
-for riser number...
--give riser range (ex. 150 - 180)    
--give a height in mm (ex. 3111)
--divide height by mid stair riser value (no float, ex. 3111 / 165 = 18 from 18.85)
--get remainder (141), divide by number of steps minus 1 (no float, 141 / 17 = 8 from 8.294)
--get remainder (136), subtract from 141 (5)
--add remainder to bottom riser, add rest (8) to other risers 
--create list (bottom riser, other risers)
+# code for getting step heights
+def list (stair_ht, min, max)
+  riser_list = []
+  avg_riser_ht = (min + max) / 2
+  step_number = stair_ht / avg_riser_ht
+  rem1 = stair_ht % avg_riser_ht
+  step_add = rem1 / (step_number - 1)
+  rem2 = rem1 % (step_number - 1)
+  riser_bottom = avg_riser_ht + rem2
+  riser_rest = avg_riser_ht + step_add
+  
+  riser_list.append(riser_bottom)
+  
+  risers = 1
+  while risers < step_number
+    (riser_list.append(riser_rest))
+    risers += 1
+  end
+  
+  puts avg_riser_ht
+  puts step_number
+  puts rem1
+  puts rem2
+  puts step_add
+  puts riser_bottom
+  puts riser_rest
+  puts "XXX"
+  p riser_list
+end
 
-function (stair_ht, min, max):
-min and max should end in 0
-riser_list = []
-
-average_riser_ht = (min + max) / 2
-no_of_steps = ht / average_riser_ht 
-rem1 = ht % average_riser_ht 
-add_to_other_steps = rem1 / (no_of_steps - 1) 
-rem2 = rem1 % (no_of steps - 1)
-riser_rest_ht = average_riser_ht + rem1
-riser_bottom_ht = average_riser_ht + rem2  
-
-riser_list.append(riser_bottom_ht)
-riser_list.append(riser_rest_ht) * (no_of_steps -1)
-
-
--add number to height to make it a multiple of 5 (3111 + 4) = 3115
--subtract number from first step: 180 - 4 = 176
-
-=end
+=begin
+draw a line from pts 
+0,0,0
+0, 250, 0 = bot1
+0, 0, 150
+0, 250, 150
+0, 250, 300
+0, 500, 300
+0, 500, 450
+0, 750, 450
+0, 750, 300 = bot2
 
