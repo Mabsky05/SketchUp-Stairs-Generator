@@ -50,37 +50,36 @@ stairface.pushpull 900.mm
 
 
 #how to loop function into code?
-=begin
-
-INIT
-pta = [0,0,0]
-ptb = [0, trd_length, 0]
-ptc = [0, 0, riser_bottom]
-ptd = [0, trd_length, riser_rest]
-
-REST
-
-pt1 = [0, trd_length, riser_rest + riser_rest]
-pt2 = [0, trd_length + trd_length, riser_rest + riser_rest]
-pt3 = [0, trd_length + trd_length, riser_rest + riser_rest + riser_rest]...
-
-pt1 = tl, rr
-pt2 = tl, += rr
-pt3 = +=tl, rr
-pt4 = tl, += rr
-
-for steps = 1,
-  while steps < say, 15
-    steps + 1
-      if steps % 2 != 0
-        steps_list.append[0, tl*steps, rr]
-        tl = tl*steps
-      else
-        steps_list.append[0, tl, rr *steps]
-        rr = rr* steps
-
-Test!
-=end
 
 
+def riser_tread(riser_init, riser, tread, steps_total)
+  steps_list = [ [0, 0, 0], [0, 0, riser_init], [0, tread, riser_init], [0, tread, riser_init + riser]]
+  points_list = []
+  riser_start = riser_init + riser
+  tread_start = tread
   
+      steps = 0
+      while steps < steps_total
+        steps += 1
+
+          if steps % 2 == 0
+            riser_start = riser_start + riser
+            steps_list.append([0, tread_start, riser_start])
+  
+          else
+            tread_start = tread_start + tread
+            steps_list.append([0, tread_start, riser_start])
+
+          end
+          
+          
+      end
+    
+  p steps_list
+  
+  
+  end
+  
+  riser_tread(160, 170, 250, 5)
+  
+
