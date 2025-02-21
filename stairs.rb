@@ -1,5 +1,4 @@
 #Generate stairs
-#TODO instructions
 #TODO everything!
 
 model = Sketchup.active_model
@@ -8,16 +7,8 @@ ent = model.entities
 #always add mm to specify lengths
 
 
-#stair face
-pt1 = [0, 0, 0]
-pt2 = [0, 250.mm, 0]
-pt3 = [900.mm, 250.mm, 0]
-pt4 = [900.mm, 0, 0]
-stairface = ent.add_face pt1, pt2, pt3, pt4
 
-#push out stair face
-stairface.reverse!
-stairface.pushpull 180.mm
+#code for storing step heights
 
 # code for getting step heights
 def list (stair_ht, min, max)
@@ -37,27 +28,59 @@ def list (stair_ht, min, max)
     (riser_list.append(riser_rest))
     risers += 1
   end
-  
-  puts avg_riser_ht
-  puts step_number
-  puts rem1
-  puts rem2
-  puts step_add
-  puts riser_bottom
-  puts riser_rest
-  puts "XXX"
-  p riser_list
 end
 
-=begin
-draw a line from pts 
-0,0,0
-0, 250, 0 = bot1
-0, 0, 150
-0, 250, 150
-0, 250, 300
-0, 500, 300
-0, 500, 450
-0, 750, 450
-0, 750, 300 = bot2
 
+
+#test stair
+#draw stair outline from pts 
+pta = [0 ,0 ,0]
+ptb = [0, 250.mm, 0] #bot1]
+ptc = [0, 0, 150.mm]
+pt1 = [0, 250.mm, 150.mm]
+pt2 = [0, 250.mm, 300.mm] 
+pt3 = [0, 500.mm, 300.mm]
+pt4 = [0, 500.mm, 450.mm]
+pt5 = [0, 750.mm, 450.mm]
+ptd = [0, 750.mm, 300.mm] #bot2
+
+#extrude to x/y axis
+stairface = ent.add_face pt1, pt3, pt4, pt5, pt6, pt7, pt8, pt9, pt2, pt1
+stairface.pushpull 900.mm
+
+
+#how to loop function into code?
+=begin
+
+INIT
+pta = [0,0,0]
+ptb = [0, trd_length, 0]
+ptc = [0, 0, riser_bottom]
+ptd = [0, trd_length, riser_rest]
+
+REST
+
+pt1 = [0, trd_length, riser_rest + riser_rest]
+pt2 = [0, trd_length + trd_length, riser_rest + riser_rest]
+pt3 = [0, trd_length + trd_length, riser_rest + riser_rest + riser_rest]...
+
+pt1 = tl, rr
+pt2 = tl, += rr
+pt3 = +=tl, rr
+pt4 = tl, += rr
+
+for steps = 1,
+  while steps < say, 15
+    steps + 1
+      if steps % 2 != 0
+        steps_list.append[0, tl*steps, rr]
+        tl = tl*steps
+      else
+        steps_list.append[0, tl, rr *steps]
+        rr = rr* steps
+
+Test!
+=end
+
+
+  
