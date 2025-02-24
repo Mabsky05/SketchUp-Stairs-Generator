@@ -1,8 +1,21 @@
 #Generate stairs
 #TODO everything!
 
+require langhandler.rb
 model = Sketchup.active_model
 ent = model.entities
+
+
+#Create input box
+prompts = ["stair_ht", "min", "max", "step_length"]
+#defaults = ["Dialogue Title", "World Peace"]
+results = inputbox prompts
+
+stair_ht = Float(results[0])
+min = Float(results[1])
+max = Float(results[2])
+step_length = Float(results[3])
+
 
 #Get step heights
 def list(stair_ht, min, max, step_length)
@@ -45,7 +58,7 @@ def list(stair_ht, min, max, step_length)
 end
 
 
-list(3000, 160, 180, 250)
+list(stair_ht, min, max, step_length)
 
 
   
