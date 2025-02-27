@@ -1,5 +1,8 @@
 # SketchUp: Stairs given Floor to Ceiling heights
 
+<img src = "references/input_box.png" height = "300"/>
+<img src = "references/stairs.png" height = "300"/>
+
 ## Usage
 Extensions > Developer > Ruby Console </br> 
 Load .rb file from save location by inputting load plus file location. </br>
@@ -23,8 +26,6 @@ in reasonable dimensions. In this process all riser heights will be equal, excep
 4) Extrude this surface to set the stair width</br>
 5) Add railings </br>
 6) Transform model into component for ease of use. </br> 
-
-
 
 ## Log
 
