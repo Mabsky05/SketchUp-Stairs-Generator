@@ -13,6 +13,7 @@ Height (floor to floor/ceiling) </br>
 minimum riser height </br>
 maximum riser height </br>
 tread depth </br>
+width </br>
 
 Steps:</br> 
 1) Divide height by the average of the min and max riser heights to get number of steps</br>
@@ -27,6 +28,14 @@ in reasonable dimensions. In this process all riser heights will be equal, excep
 
 ## Log
 
+### 27/02/2025
+Base code working: can now add surface and extrude stairs to width.</br>
+Added comments for clarity.</br>
+To add:</br>
+UI limits (i.e., alerting wrong inputs on UI)</br>
+Railing</br>
+Save as component</br>
+
 ### 25/02/2025
 Repo renamed to stairs.rb, will focus on only one script.</br>
 Code now produces basic stair outline, rest to follow.</br>
@@ -35,7 +44,6 @@ Stair surface, then extrude</br>
 UI limits (i.e., alerting wrong inputs on UI)</br>
 Railing</br>
 Save as component</br>
-
 
 ### 20/02/2025
 first upload - stairs.rb in progress
