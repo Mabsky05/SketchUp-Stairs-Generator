@@ -67,8 +67,20 @@ def list(stair_ht, min, max, step_length, width)
     
     # Create railing 900mm above
     move_railing_top = Geom::Transformation.translation([0 ,0 , 900.mm])
+    move_railing_top_across = Geom::Transformation.translation([-width, 0 , 0])
     railing_top = Sketchup.active_model.entities.add_line steps_list[1], steps_list[-3]
+
+  
+
+    #railing_top2_pt1 =  Sketchup.active_model.entities.transform_entities move_railing_top_across, steps_list[1]
+
     Sketchup.active_model.entities.transform_entities move_railing_top, railing_top
+    railing_top2 = Sketchup.active_model.entities.add_group railing_top
+    railing_top_copy = railing_top2.copy
+    Sketchup.active_model.entities.transform_entities move_railing_top_across, railing_top_copy
+  
+
+    
     
     vector_pt_anchor2 = Geom::Vector3d.new(0, 0, -riser_rest)
     move_pt_anchor2 = Geom::Transformation.translation(vector_pt_anchor2)
