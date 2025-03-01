@@ -4,20 +4,21 @@ ent = model.entities
 
 # Create input box
 prompts = ["stair height", "minimum riser height", "maximum riser height", "step_length", "width of stairs"]
-results = inputbox prompts
+defaults = [3000, 150, 180, 250, 1000]
+input = UI.inputbox(prompts, defaults, "Enter Stair Data")
 
-stair_ht = Float(results[0])
-min = Float(results[1])
-max = Float(results[2])
-step_length = Float(results[3])
-width = Float(results[4])
+stair_ht = Float(input[0])
+min = Float(input[1])
+max = Float(input[2])
+step_length = Float(input[3])
+width = Float(input[4])
 
 #Restriction clauses
 # if min < 150
 #   puts "minimum riser height is less than 130"
 # end
 
-list(stair_ht.mm, min.mm, max.mm, step_length.mm, width.mm)
+
 
 #Get step heights
 def list(stair_ht, min, max, step_length, width)
@@ -63,22 +64,36 @@ def list(stair_ht, min, max, step_length, width)
             end          
         end
 
-    vector = Geom::Vector3d.new(0,0,-riser_rest)
-    tr = Geom::Transformation.translation(vector)
+    
+    # Create railing 900mm above
+    move_railing_top = Geom::Transformation.translation([0 ,0 , 900.mm])
+    railing_top = Sketchup.active_model.entities.add_line steps_list[1], steps_list[-3]
+    Sketchup.active_model.entities.transform_entities move_railing_top, railing_top
+    
+    vector_pt_anchor2 = Geom::Vector3d.new(0, 0, -riser_rest)
+    move_pt_anchor2 = Geom::Transformation.translation(vector_pt_anchor2)
     pt_anchor1 =[0, tread, 0]
-    pt_anchor2 = tr * (steps_list.last)
+    pt_anchor2 = move_pt_anchor2 * (steps_list.last)
 
     steps_list.prepend(pt_anchor1)
     steps_list.append(pt_anchor2)
     steps_list.append(pt_anchor1)
     stair_face = Sketchup.active_model.entities.add_face (steps_list)
     stair_face.pushpull(width)
+
+
+ 
+
+
+
   end
 
   riser_tread(riser_init, riser_rest, step_number, tread, width)
 
 end
 
+
+list(stair_ht.mm, min.mm, max.mm, step_length.mm, width.mm)
 #testing input for console
 # list(2463, 170, 180, 240, 800)
 
