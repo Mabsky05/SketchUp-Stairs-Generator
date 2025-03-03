@@ -18,8 +18,6 @@ width = Float(input[4])
 #   puts "minimum riser height is less than 130"
 # end
 
-
-
 #Get step heights
 def list(stair_ht, min, max, step_length, width)
   
@@ -44,7 +42,7 @@ def list(stair_ht, min, max, step_length, width)
   tread = step_length
   width = width
 
-  #Create stair face and extrude 
+  # Create stair face and extrude 
   def riser_tread(riser_init, riser_rest, step_number, tread, width)
     steps_list = [ [0, 0, 0], [0, 0, riser_init], [0, tread, riser_init], [0, tread, riser_init + riser_rest]]
     riser_start = riser_init + riser_rest
@@ -65,23 +63,40 @@ def list(stair_ht, min, max, step_length, width)
         end
 
     
-    # Create railing 900mm above
-    move_railing_top = Geom::Transformation.translation([0 ,0 , 900.mm])
-    move_railing_top_across = Geom::Transformation.translation([-width, 0 , 0])
-    railing_top = Sketchup.active_model.entities.add_line steps_list[1], steps_list[-3]
-
-  
-
-    #railing_top2_pt1 =  Sketchup.active_model.entities.transform_entities move_railing_top_across, steps_list[1]
-
-    Sketchup.active_model.entities.transform_entities move_railing_top, railing_top
-    railing_top2 = Sketchup.active_model.entities.add_group railing_top
-    railing_top_copy = railing_top2.copy
-    Sketchup.active_model.entities.transform_entities move_railing_top_across, railing_top_copy
-  
-
+    # Vectors
+    move_900z = Geom::Transformation.translation([0 ,0 , 900.mm])
+    move_300y = Geom::Transformation.translation([0 ,300.mm , 0])
+    move_x_width = Geom::Transformation.translation([-width, 0 , 0])  
     
+    # Point Vectors
+    plus300y = Geom::Vector3d.new(0, 300.mm, 0)
+    neg300y = Geom::Vector3d.new(0, -300.mm, 0)
+
+    # Create rail
+    rail_top = Sketchup.active_model.entities.add_line steps_list[1], steps_list[-3]
     
+    # Rail extension points
+    move_Pt_300y = Geom::Transformation.translation(plus300y)
+    move_Pt_neg300y = Geom::Transformation.translation(neg300y)
+    rail_extPt1 = move_Pt_neg300y * steps_list[1]
+    rail_extPt2 = move_Pt_300y * steps_list[-3]
+
+    # Create rail extensions, group rail
+    rail_ext1 = Sketchup.active_model.entities.add_line rail_extPt1, steps_list[1]
+    rail_ext2 = Sketchup.active_model.entities.add_line rail_extPt2, steps_list[-3]
+
+    # Join rail    
+    rail_all = Sketchup.active_model.entities.add_group rail_top, rail_ext1, rail_ext2
+
+    # Draw a circle along rail and extrude 
+
+    # Move rail up
+    Sketchup.active_model.entities.transform_entities move_900z, rail_all
+    
+    # Duplicate rail on other side
+    rail_all2 = rail_all.copy
+    Sketchup.active_model.entities.transform_entities move_x_width, rail_all2
+  
     vector_pt_anchor2 = Geom::Vector3d.new(0, 0, -riser_rest)
     move_pt_anchor2 = Geom::Transformation.translation(vector_pt_anchor2)
     pt_anchor1 =[0, tread, 0]
@@ -93,11 +108,6 @@ def list(stair_ht, min, max, step_length, width)
     stair_face = Sketchup.active_model.entities.add_face (steps_list)
     stair_face.pushpull(width)
 
-
- 
-
-
-
   end
 
   riser_tread(riser_init, riser_rest, step_number, tread, width)
@@ -106,8 +116,7 @@ end
 
 
 list(stair_ht.mm, min.mm, max.mm, step_length.mm, width.mm)
-#testing input for console
-# list(2463, 170, 180, 240, 800)
+
 
 
 
