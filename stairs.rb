@@ -76,23 +76,35 @@ def list(stair_ht, min, max, step_length, width)
     move_Pt_300y = Geom::Transformation.translation(plus300y)
     move_Pt_neg300y = Geom::Transformation.translation(neg300y)
     rail_extPt1 = move_Pt_neg300y * steps_list[1]
+    rail_extPt1_up = move_900z * rail_extPt1
     rail_extPt2 = move_Pt_300y * steps_list[-3]
 
     # Create rail
     rail = Sketchup.active_model.entities.add_curve rail_extPt1, steps_list[1], steps_list[-3], rail_extPt2
-    
+    rail_group = Sketchup.active_model.entities.add_group rail
+    rail_group_copy = rail_group.copy 
+    rail_across = Sketchup.active_model.entities.transform_entities move_x_width, rail_group_copy
    
-    #Draw a circle along rail and extrude 
-    rail_pipe = Sketchup.active_model.entities.add_circle rail_extPt1, [0,1,0], 32.mm
+    rail_group_top = Sketchup.active_model.entities.transform_entities move_900z, rail_group
+    rail_group_top2 = Sketchup.active_model.entities.transform_entities move_900z, rail_group_copy
+
+    rail_group.explode
+
+    # # Move rail up
+    # Sketchup.active_model.entities.transform_entities move_900z, rail
+
+    # # Duplicate rail and move across
+    # rail_2 = rail.copy
+    # Sketchup.active_model.entities.transform_entities move_x_width, rail_2
+   
+    # Draw a circle along rail and extrude  
+    rail_pipe = Sketchup.active_model.entities.add_circle rail_extPt1_up, [0,1,0], 32.mm
     rail_pipe_srf = Sketchup.active_model.entities.add_face (rail_pipe)
     hey = rail_pipe_srf.followme rail
 
-    # # Move rail up
-    # Sketchup.active_model.entities.transform_entities move_900z, rail_all
+  
     
-    # # Duplicate rail on other side
-    # rail_all2 = rail_all.copy
-    # Sketchup.active_model.entities.transform_entities move_x_width, rail_all2
+
   
     vector_pt_anchor2 = Geom::Vector3d.new(0, 0, -riser_rest)
     move_pt_anchor2 = Geom::Transformation.translation(vector_pt_anchor2)
