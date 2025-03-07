@@ -29,6 +29,15 @@ in reasonable dimensions. In this process all riser heights will be equal, excep
 
 ## Log
 
+### 08/03/2025
+Base code input generates stairs and railings </br>
+TODO:</br>
+Options: to put railings or not</br>
+Refining railing to fit on stair edge</br>
+Warnings for unusual stair dimensions (not following building code)</br>
+Informing users on dimensions of stairs and widths</br>
+Simplify: code is too wordy</br>
+
 ### 27/02/2025
 Base code working: can now add surface and extrude stairs to width.</br>
 Added comments for clarity.</br>
