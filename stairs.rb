@@ -1,7 +1,3 @@
-model = Sketchup.active_model
-ent = model.entities
-# Sketchup.active_model.options
-
 # Create input box
 prompts = ["stair height", "minimum riser height", "maximum riser height", "step_length", "width of stairs"]
 defaults = [3000, 150, 180, 250, 1000]
@@ -20,7 +16,7 @@ width = Float(input[4])
 
 #Get step heights
 def list(stair_ht, min, max, step_length, width)
-  
+
   #average of two given riser values, ideally based on building code
   avg_riser_ht = (min + max) / 2
   
@@ -62,6 +58,7 @@ def list(stair_ht, min, max, step_length, width)
             end          
         end
 
+    model = Sketchup.active_model.entities
     
     # Vectors
     move_900z = Geom::Transformation.translation([0 ,0 , 900.mm])
@@ -91,21 +88,19 @@ def list(stair_ht, min, max, step_length, width)
     steps_list3yx = move_x_width * steps_list3y
     rail_extPt2yx = move_x_width * rail_extPt2y
 
-
     # Create rail
-    rail = Sketchup.active_model.entities.add_curve rail_extPt1y, steps_list1y, steps_list3y, rail_extPt2y
-    rail2 = Sketchup.active_model.entities.add_curve rail_extPt1yx, steps_list1yx, steps_list3yx, rail_extPt2yx
+    rail = model.add_curve rail_extPt1y, steps_list1y, steps_list3y, rail_extPt2y
+    rail2 = model.add_curve rail_extPt1yx, steps_list1yx, steps_list3yx, rail_extPt2yx
 
-   
     # Draw a circle along rail and extrude  
-    rail_circle = Sketchup.active_model.entities.add_circle rail_extPt1y, [0,1,0], 32.mm
-    rail_circle_srf = Sketchup.active_model.entities.add_face (rail_circle)
+    rail_circle = model.add_circle rail_extPt1y, [0,1,0], 32.mm
+    rail_circle_srf = model.add_face (rail_circle)
     rail_pipe = rail_circle_srf.followme rail
 
-     # Draw a circle along 2nd rail and extrude  
-     rail_circle2 = Sketchup.active_model.entities.add_circle rail_extPt1yx, [0,1,0], 32.mm
-     rail_circle_srf2 = Sketchup.active_model.entities.add_face (rail_circle2)
-     rail_pipe2 = rail_circle_srf2.followme rail2
+    # Draw a circle along 2nd rail and extrude  
+    rail_circle2 = model.add_circle rail_extPt1yx, [0,1,0], 32.mm
+    rail_circle_srf2 = model.add_face (rail_circle2)
+    rail_pipe2 = rail_circle_srf2.followme rail2
 
     vector_pt_anchor2 = Geom::Vector3d.new(0, 0, -riser_rest)
     move_pt_anchor2 = Geom::Transformation.translation(vector_pt_anchor2)
@@ -115,7 +110,7 @@ def list(stair_ht, min, max, step_length, width)
     steps_list.prepend(pt_anchor1)
     steps_list.append(pt_anchor2)
     steps_list.append(pt_anchor1)
-    stair_face = Sketchup.active_model.entities.add_face (steps_list)
+    stair_face = model.add_face (steps_list)
     stair_face.pushpull(width)
 
   end
