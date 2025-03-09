@@ -15,6 +15,7 @@ width = Float(input[4])
 # end
 
 #Get step heights
+#TODO add riser section
 def list(stair_ht, min, max, step_length, width)
 
   #average of two given riser values, ideally based on building code
@@ -38,7 +39,7 @@ def list(stair_ht, min, max, step_length, width)
   tread = step_length
   width = width
 
-  # Create stair face and extrude 
+  # List of points to 'trace' stair
   def riser_tread(riser_init, riser_rest, step_number, tread, width)
     steps_list = [ [0, 0, 0], [0, 0, riser_init], [0, tread, riser_init], [0, tread, riser_init + riser_rest]]
     riser_start = riser_init + riser_rest
@@ -64,49 +65,47 @@ def list(stair_ht, min, max, step_length, width)
     move_900z = Geom::Transformation.translation([0 ,0 , 900.mm])
     move_300y = Geom::Transformation.translation([0 ,300.mm , 0])
     move_x_width = Geom::Transformation.translation([-width, 0 , 0])  
-    
-    # Point Vectors
-    plus300y = Geom::Vector3d.new(0, 300.mm, 0)
-    neg300y = Geom::Vector3d.new(0, -300.mm, 0)
-    
+     
     # Rail extension points
-    move_Pt_300y = Geom::Transformation.translation(plus300y)
-    move_Pt_neg300y = Geom::Transformation.translation(neg300y)
-    rail_extPt1 = move_Pt_neg300y * steps_list[1]
-    rail_extPt2 = move_Pt_300y * steps_list[-3]
+    move_300y = Geom::Transformation.translation(Geom::Vector3d.new(0, 300.mm, 0))
+    move_neg300y = Geom::Transformation.translation(Geom::Vector3d.new(0, -300.mm, 0))
+    rail_pt1 = move_neg300y * steps_list[1]
+    rail_pt2 = move_300y * steps_list[-3]
     
     # Rail points are rail_extPt1, steps_list[1], steps_list[-3], rail_extPt2
     # Move points on rail up
-    rail_extPt1y = move_900z * rail_extPt1
-    steps_list1y = move_900z * steps_list[1]
-    steps_list3y = move_900z * steps_list[-3]
-    rail_extPt2y = move_900z * rail_extPt2
+    rail_pt1z = move_900z * rail_pt1
+    steps_list1z = move_900z * steps_list[1]
+    steps_list3z = move_900z * steps_list[-3]
+    rail_pt2z = move_900z * rail_pt2
 
     # Move duplicates across to create second rail
-    rail_extPt1yx = move_x_width * rail_extPt1y
-    steps_list1yx = move_x_width * steps_list1y
-    steps_list3yx = move_x_width * steps_list3y
-    rail_extPt2yx = move_x_width * rail_extPt2y
+    rail_pt1z2 = move_x_width * rail_pt1z
+    steps_list1z2 = move_x_width * steps_list1z
+    steps_list3z2 = move_x_width * steps_list3z
+    rail_pt2z2 = move_x_width * rail_pt2z
 
-    # Create rail
-    rail = model.add_curve rail_extPt1y, steps_list1y, steps_list3y, rail_extPt2y
-    rail2 = model.add_curve rail_extPt1yx, steps_list1yx, steps_list3yx, rail_extPt2yx
+    # Create rails
+    rail = model.add_curve rail_pt1z, steps_list1z, steps_list3z, rail_pt2z
+    rail2 = model.add_curve rail_pt1z2, steps_list1z2, steps_list3z2, rail_pt2z2
 
     # Draw a circle along rail and extrude  
-    rail_circle = model.add_circle rail_extPt1y, [0,1,0], 32.mm
+    rail_circle = model.add_circle rail_pt1z, [0,1,0], 25.mm
     rail_circle_srf = model.add_face (rail_circle)
     rail_pipe = rail_circle_srf.followme rail
 
     # Draw a circle along 2nd rail and extrude  
-    rail_circle2 = model.add_circle rail_extPt1yx, [0,1,0], 32.mm
+    rail_circle2 = model.add_circle rail_pt1z2, [0,1,0], 25.mm
     rail_circle_srf2 = model.add_face (rail_circle2)
     rail_pipe2 = rail_circle_srf2.followme rail2
 
+    # 2 additional points. This is for completing the stair profile
     vector_pt_anchor2 = Geom::Vector3d.new(0, 0, -riser_rest)
     move_pt_anchor2 = Geom::Transformation.translation(vector_pt_anchor2)
     pt_anchor1 =[0, tread, 0]
     pt_anchor2 = move_pt_anchor2 * (steps_list.last)
 
+    # Append 2 additional points, complete stair profile, then extrude by width
     steps_list.prepend(pt_anchor1)
     steps_list.append(pt_anchor2)
     steps_list.append(pt_anchor1)
