@@ -1,5 +1,7 @@
 # Create input box
-prompts = ["stair height", "minimum riser height", "maximum riser height", "step_length", "width of stairs"]
+def prompty()
+prompts = ["stair height", "minimum riser height", "maximum riser height", "step_length", 
+"width of stairs", "add rail? (Y or N)"]
 defaults = [3000, 150, 180, 250, 1000]
 input = UI.inputbox(prompts, defaults, "Enter Stair Data")
 
@@ -8,15 +10,23 @@ min = Float(input[1])
 max = Float(input[2])
 step_length = Float(input[3])
 width = Float(input[4])
+riser_op = String(input[5])
 
 #Restriction clauses
-# if min < 150
-#   puts "minimum riser height is less than 130"
-# end
+  if (riser_op == "Y" or riser_op == "y" or riser_op == "N" or riser_op == "n")
+  puts "ok"
+  else
+    UI.messagebox "Please enter y or n for riser"
+    return prompty()
+  end
+end
+
+prompty()
+
 
 #Get step heights
 #TODO add riser section
-def list(stair_ht, min, max, step_length, width)
+def list(stair_ht, min, max, step_length, width, riser_op)
 
   #average of two given riser values, ideally based on building code
   avg_riser_ht = (min + max) / 2
@@ -40,7 +50,7 @@ def list(stair_ht, min, max, step_length, width)
   width = width
 
   # List of points to 'trace' stair
-  def riser_tread(riser_init, riser_rest, step_number, tread, width)
+  def riser_tread(riser_init, riser_rest, step_number, tread, width, riser_op)
     steps_list = [ [0, 0, 0], [0, 0, riser_init], [0, tread, riser_init], [0, tread, riser_init + riser_rest]]
     riser_start = riser_init + riser_rest
     tread_start = tread    
@@ -61,6 +71,8 @@ def list(stair_ht, min, max, step_length, width)
 
     model = Sketchup.active_model.entities
     
+    if riser_op == "y"
+
     # Vectors
     move_900z = Geom::Transformation.translation([0 ,0 , 900.mm])
     move_300y = Geom::Transformation.translation([0 ,300.mm , 0])
@@ -99,6 +111,8 @@ def list(stair_ht, min, max, step_length, width)
     rail_circle_srf2 = model.add_face (rail_circle2)
     rail_pipe2 = rail_circle_srf2.followme rail2
 
+    end
+
     # 2 additional points. This is for completing the stair profile
     vector_pt_anchor2 = Geom::Vector3d.new(0, 0, -riser_rest)
     move_pt_anchor2 = Geom::Transformation.translation(vector_pt_anchor2)
@@ -114,12 +128,12 @@ def list(stair_ht, min, max, step_length, width)
 
   end
 
-  riser_tread(riser_init, riser_rest, step_number, tread, width)
+  riser_tread(riser_init, riser_rest, step_number, tread, width, riser_op)
 
 end
 
 
-list(stair_ht.mm, min.mm, max.mm, step_length.mm, width.mm)
+list(stair_ht.mm, min.mm, max.mm, step_length.mm, width.mm, riser_op)
 
 
 
