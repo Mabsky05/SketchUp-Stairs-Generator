@@ -14,19 +14,15 @@ riser_op = String(input[5])
 
 #Restriction clauses
   if (riser_op == "Y" or riser_op == "y" or riser_op == "N" or riser_op == "n")
-  puts "ok"
+    puts "ok"
   else
     UI.messagebox "Please enter y or n for riser"
     return prompty()
   end
-end
+  
 
-prompty()
-
-
-#Get step heights
-#TODO add riser section
-def list(stair_ht, min, max, step_length, width, riser_op)
+  #Get step heights
+  def list(stair_ht, min, max, step_length, width, riser_op)
 
   #average of two given riser values, ideally based on building code
   avg_riser_ht = (min + max) / 2
@@ -50,68 +46,70 @@ def list(stair_ht, min, max, step_length, width, riser_op)
   width = width
 
   # List of points to 'trace' stair
-  def riser_tread(riser_init, riser_rest, step_number, tread, width, riser_op)
+    def riser_tread(riser_init, riser_rest, step_number, tread, width, riser_op)
     steps_list = [ [0, 0, 0], [0, 0, riser_init], [0, tread, riser_init], [0, tread, riser_init + riser_rest]]
     riser_start = riser_init + riser_rest
     tread_start = tread    
-        steps = 0
-        while steps < ((step_number * 2) -3)
-          steps += 1
+      steps = 0
+      while steps < ((step_number * 2) -3)
+        steps += 1
+
+          if steps % 2 == 0
+            riser_start = riser_start + riser_rest
+            steps_list.append([0, tread_start, riser_start])
   
-            if steps % 2 == 0
-              riser_start = riser_start + riser_rest
-              steps_list.append([0, tread_start, riser_start])
+          else
+            tread_start = tread_start + tread
+            steps_list.append([0, tread_start, riser_start])
+
+          end          
+      end
+
+      model = Sketchup.active_model.entities
     
-            else
-              tread_start = tread_start + tread
-              steps_list.append([0, tread_start, riser_start])
-  
-            end          
-        end
+      def rail_create(width,steps_list)  
+        model = Sketchup.active_model.entities
+      # Vectors
+      move_900z = Geom::Transformation.translation([0 ,0 , 900.mm])
+      move_300y = Geom::Transformation.translation([0 ,300.mm , 0])
+      move_x_width = Geom::Transformation.translation([-width, 0 , 0])  
+      
+      # Rail extension points
+      move_300y = Geom::Transformation.translation(Geom::Vector3d.new(0, 300.mm, 0))
+      move_neg300y = Geom::Transformation.translation(Geom::Vector3d.new(0, -300.mm, 0))
+      rail_pt1 = move_neg300y * steps_list[1]
+      rail_pt2 = move_300y * steps_list[-3]
+      
+      # Rail points are rail_extPt1, steps_list[1], steps_list[-3], rail_extPt2
+      # Move points on rail up
+      rail_pt1z = move_900z * rail_pt1
+      steps_list1z = move_900z * steps_list[1]
+      steps_list3z = move_900z * steps_list[-3]
+      rail_pt2z = move_900z * rail_pt2
 
-    model = Sketchup.active_model.entities
-    
-    if riser_op == "y"
+      # Move duplicates across to create second rail
+      rail_pt1z2 = move_x_width * rail_pt1z
+      steps_list1z2 = move_x_width * steps_list1z
+      steps_list3z2 = move_x_width * steps_list3z
+      rail_pt2z2 = move_x_width * rail_pt2z
 
-    # Vectors
-    move_900z = Geom::Transformation.translation([0 ,0 , 900.mm])
-    move_300y = Geom::Transformation.translation([0 ,300.mm , 0])
-    move_x_width = Geom::Transformation.translation([-width, 0 , 0])  
-     
-    # Rail extension points
-    move_300y = Geom::Transformation.translation(Geom::Vector3d.new(0, 300.mm, 0))
-    move_neg300y = Geom::Transformation.translation(Geom::Vector3d.new(0, -300.mm, 0))
-    rail_pt1 = move_neg300y * steps_list[1]
-    rail_pt2 = move_300y * steps_list[-3]
-    
-    # Rail points are rail_extPt1, steps_list[1], steps_list[-3], rail_extPt2
-    # Move points on rail up
-    rail_pt1z = move_900z * rail_pt1
-    steps_list1z = move_900z * steps_list[1]
-    steps_list3z = move_900z * steps_list[-3]
-    rail_pt2z = move_900z * rail_pt2
+      # Create rails
+      rail = model.add_curve rail_pt1z, steps_list1z, steps_list3z, rail_pt2z
+      rail2 = model.add_curve rail_pt1z2, steps_list1z2, steps_list3z2, rail_pt2z2
 
-    # Move duplicates across to create second rail
-    rail_pt1z2 = move_x_width * rail_pt1z
-    steps_list1z2 = move_x_width * steps_list1z
-    steps_list3z2 = move_x_width * steps_list3z
-    rail_pt2z2 = move_x_width * rail_pt2z
+      # Draw a circle along rail and extrude  
+      rail_circle = model.add_circle rail_pt1z, [0,1,0], 25.mm
+      rail_circle_srf = model.add_face (rail_circle)
+      rail_pipe = rail_circle_srf.followme rail
 
-    # Create rails
-    rail = model.add_curve rail_pt1z, steps_list1z, steps_list3z, rail_pt2z
-    rail2 = model.add_curve rail_pt1z2, steps_list1z2, steps_list3z2, rail_pt2z2
-
-    # Draw a circle along rail and extrude  
-    rail_circle = model.add_circle rail_pt1z, [0,1,0], 25.mm
-    rail_circle_srf = model.add_face (rail_circle)
-    rail_pipe = rail_circle_srf.followme rail
-
-    # Draw a circle along 2nd rail and extrude  
-    rail_circle2 = model.add_circle rail_pt1z2, [0,1,0], 25.mm
-    rail_circle_srf2 = model.add_face (rail_circle2)
-    rail_pipe2 = rail_circle_srf2.followme rail2
-
+      # Draw a circle along 2nd rail and extrude  
+      rail_circle2 = model.add_circle rail_pt1z2, [0,1,0], 25.mm
+      rail_circle_srf2 = model.add_face (rail_circle2)
+      rail_pipe2 = rail_circle_srf2.followme rail2
+      # end
     end
+
+ 
 
     # 2 additional points. This is for completing the stair profile
     vector_pt_anchor2 = Geom::Vector3d.new(0, 0, -riser_rest)
@@ -126,7 +124,13 @@ def list(stair_ht, min, max, step_length, width, riser_op)
     stair_face = model.add_face (steps_list)
     stair_face.pushpull(width)
 
+    if (riser_op == "y" or riser_op == "Y")
+      rail_create(width,steps_list)
+    end
+
   end
+
+
 
   riser_tread(riser_init, riser_rest, step_number, tread, width, riser_op)
 
@@ -134,7 +138,9 @@ end
 
 
 list(stair_ht.mm, min.mm, max.mm, step_length.mm, width.mm, riser_op)
+end
 
+prompty()
 
 
 
