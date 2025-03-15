@@ -1,22 +1,52 @@
 # SketchUp: Stairs given Floor to Ceiling heights
 
 <img src = "references/input_box.png" height = "300"/>
+<img src = "references/data_box.png" height = "300"/>
 <img src = "references/stairs.png" height = "300"/>
 
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+## Rationale / Basics
+
+Ever gotten bored of having to plan and draft or model stairs between floors?</br>
+
+stairs.rb will generate that for you. All you need are: </br>
+
+The height of the stairs (from the ground to the next level) </br>
+The minimum and maximum heights for each step (from building code, preferably) </br>
+The length for each step </br>
+
+
 ## Usage
+From top bar of SketchUp UI: </br>
 Extensions > Developer > Ruby Console </br> 
 Load .rb file from save location by inputting load plus file location. </br>
 Ex. "load C:/[username]/[script name.rb]" </br>
 
-Or copy-paste script contents to console.
+Or copy-paste stairs.rb file contents to console. </br>
 
-## Summary 
-Stairs are generated on inputting the following: </br>
-Height (floor to floor/ceiling) </br>
+Then hit Enter. 
+
+## Usage / Instructions
+
+Upon running the code, a prompt box appears with default values for the following: </br>
+
+stair height (floor to top of stair) </br>
 minimum riser height </br>
 maximum riser height </br>
-tread depth </br>
-width </br>
+step length </br>
+width of stairs </br>
+add rail (Y or N?) </br>
+
+Edit desired values and click OK. </br> 
+A window showing stair data appears. click OK. </br>
+A stair group will be generated with the desired values. </br> 
+
+Entering 'y' for the 'add rail' option will generate 50mm diameter rails. These will be
+900mm O.C above the stair steps, and extend 300mm horizontally from the ends of the stairs. 
+
+## What the code actually does
 
 Steps:</br> 
 1) Divide height by the average of the min and max riser heights to get number of steps</br>
@@ -24,10 +54,15 @@ Steps:</br>
 in reasonable dimensions. In this process all riser heights will be equal, except the first </br>
 3) Draw a (poly)line surface tracing the stair outline.</br>
 4) Extrude this surface to set the stair width</br>
-5) Add railings </br>
-6) Transform model into component for ease of use. </br> 
+5) Railings: get and move stair points, then extrude a circular surface perpendicular to these points. </br>
+6) Transform stair into component for ease of use. </br> 
 
 ## Log
+
+### 08/03/2025
+Code complete </br>
+possible TODO: group rails </br>
+Added licence and updated readme.md
 
 ### 08/03/2025
 Base code input generates stairs and railings </br>

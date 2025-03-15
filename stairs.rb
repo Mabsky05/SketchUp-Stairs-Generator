@@ -20,7 +20,6 @@ riser_op = String(input[5])
     return prompt_stair()
   end
   
-
   #Get step heights
   def list(stair_ht, min, max, step_length, width, riser_op)
 
@@ -50,8 +49,7 @@ riser_op = String(input[5])
   "\n" + "The other risers are " + (riser_rest*25.4).to_s + " mm high" + 
   "\n" + "The stair width WITHOUT railings is " + (width*25.4).to_s + " mm" + 
   "\n" + "The stair width WITH railings is " + ((width*25.4)-100 ).to_s + " mm" , MB_MULTILINE,
-  "Stair Information"
-
+  "Stair Data"
 
   # List of points to 'trace' stair
     def riser_tread(riser_init, riser_rest, step_number, tread, width, riser_op)
@@ -113,11 +111,13 @@ riser_op = String(input[5])
       rail_circle_srf = model.add_face (rail_circle)
       rail_pipe = rail_circle_srf.followme rail
 
+      
       # Draw a 25mm radius circle on point and extrude (2nd rail)  
       rail_circle2 = model.add_circle rail_pt1z2, [0,1,0], 25.mm
       rail_circle_srf2 = model.add_face (rail_circle2)
       rail_pipe2 = rail_circle_srf2.followme rail2
-      # end
+      
+      
     end
 
     # 2 additional points. This is for completing the stair profile
@@ -135,11 +135,14 @@ riser_op = String(input[5])
 
     if (riser_op == "y" or riser_op == "Y")
       rail_create(width,steps_list)
+  
     end
 
-    
+    components_list = Sketchup.active_model.definitions
+    stair_group = model.add_group stair_face.all_connected 
+    stair_components = components_list.add "stair_group"
+    stair_components.save_as "stairs"
   end
-
   riser_tread(riser_init, riser_rest, step_number, tread, width, riser_op)
 end
 
