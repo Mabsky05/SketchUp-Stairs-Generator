@@ -1,4 +1,4 @@
-# SketchUp: Stairs given Floor to Ceiling heights
+# SketchUp: Stairs Generator
 
 <img src = "references/input_box.png" height = "300"/>
 <img src = "references/data_box.png" height = "300"/>
