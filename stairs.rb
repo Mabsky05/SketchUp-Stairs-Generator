@@ -45,6 +45,14 @@ riser_op = String(input[5])
   tread = step_length
   width = width
 
+  UI.messagebox "The number of steps is " + step_number.to_s + 
+  "\n" + "The first riser is " + (riser_init*25.4).to_s  + " mm high" + 
+  "\n" + "The other risers are " + (riser_rest*25.4).to_s + " mm high" + 
+  "\n" + "The stair width WITHOUT railings is " + (width*25.4).to_s + " mm" + 
+  "\n" + "The stair width WITH railings is " + ((width*25.4)-100 ).to_s + " mm" , MB_MULTILINE,
+  "Stair Information"
+
+
   # List of points to 'trace' stair
     def riser_tread(riser_init, riser_rest, step_number, tread, width, riser_op)
     model = Sketchup.active_model.entities
@@ -129,6 +137,7 @@ riser_op = String(input[5])
       rail_create(width,steps_list)
     end
 
+    
   end
 
   riser_tread(riser_init, riser_rest, step_number, tread, width, riser_op)
