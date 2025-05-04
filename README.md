@@ -32,11 +32,11 @@ Then hit Enter.
 
 Upon running the code, a prompt box appears with default values for the following: </br>
 
-stair height (floor to top of stair) </br>
-minimum riser height </br>
-maximum riser height </br>
-step length </br>
-width of stairs </br>
+stair height (floor to top of stair, mm) </br>
+minimum riser height (mm) </br>
+maximum riser height (mm) </br>
+step length (mm) </br>
+width of stairs (mm) </br>
 add rail (Y or N?) </br>
 
 Edit desired values and click OK. </br> 
