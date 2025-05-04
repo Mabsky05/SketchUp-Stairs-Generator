@@ -7,18 +7,18 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## Rationale / Basics
+## What's this?
 
-Ever gotten bored of having to plan and draft or model stairs between floors?</br>
+Ruby code for auto generating a staircase, in SketchUp</br>
 
-stairs.rb will generate that for you. All you need are: </br>
+All you need to know are: </br>
 
 The height of the stairs (from the ground to the next level) </br>
 The minimum and maximum heights for each step (from building code, preferably) </br>
 The length for each step </br>
 
 
-## Usage
+## How to Use
 From top bar of SketchUp UI: </br>
 Extensions > Developer > Ruby Console </br> 
 Load .rb file from save location by inputting load plus file location. </br>
